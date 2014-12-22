@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.wearable.view.WatchViewStub;
 import android.util.Log;
@@ -30,6 +31,8 @@ public class MainActivity extends Activity {
     static InputStream is = null;
     static JSONObject jObj = null;
     static String json = "";
+
+    public static final String URL = "https://api.bitcoinaverage.com/ticker/global/USD/";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,7 +75,7 @@ public class MainActivity extends Activity {
         return isAvailable;
     }
 
-    protected JSONObject parseJSON(String url) {
+    protected JSONObject getJSON(String url) {
 
         // Make request
         try {
@@ -107,5 +110,32 @@ public class MainActivity extends Activity {
 
         // return json string
         return jObj;
+    }
+
+    private class ParseJSON extends AsyncTask<String, String, JSONObject> {
+        @Override
+        protected JSONObject doInBackground(String... args) {
+            //JSONParser jParser = new JSONParser();
+            // Getting JSON from URL
+            JSONObject json = getJSON(URL);
+            return json;
+        }
+        @Override
+        protected void onPostExecute(JSONObject json) {
+            try {
+                // jokes = json.getJSONArray(TAG_JOKE);
+                // getting json from url
+                //JSONObject c = json.getJSONObject("value");
+                // store json item
+                //String joke = c.getString("joke");
+                // set json data in textview
+                //priceText = (TextView) findViewById(R.id.text);
+                //priceText.setText();
+
+                JSONObject p = json.getJSONObject("");
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
     }
 }
