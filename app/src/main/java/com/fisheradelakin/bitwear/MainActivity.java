@@ -81,9 +81,9 @@ public class MainActivity extends Activity {
             try {
                 // jokes = json.getJSONArray(TAG_JOKE);
                 // getting json from url
-                JSONObject c = json.getJSONObject("");
+                //JSONObject c = json.getJSONObject("");
                 // store json item
-                String price = c.getString("price");
+                String price = json.getString("24h_avg");
                 // set json data in textview
                 mTextView.setText(price);
             } catch (Exception e) {
