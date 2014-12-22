@@ -4,22 +4,35 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 tools:context=".MainActivity"
-                tools:deviceIds="wear_round">
+                tools:deviceIds="wear_round"
+                android:background="@color/black">
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:text="$330.15"
-        android:id="@+id/textView"
+        android:id="@+id/text"
+        android:textSize="24sp"
         android:layout_centerVertical="true"
-        android:layout_centerHorizontal="true"/>
+        android:layout_alignStart="@+id/button"/>
 
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Refresh"
         android:id="@+id/button"
-        android:layout_below="@+id/textView"
-        android:layout_centerHorizontal="true"/>
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="21dp"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="1 BTC"
+        android:id="@+id/textView2"
+        android:layout_above="@+id/text"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="24dp"/>
 </RelativeLayout>
