@@ -7,6 +7,7 @@ import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.TextView;
 
 import org.json.JSONObject;
@@ -64,13 +65,14 @@ public class MainActivity extends ActionBarActivity {
             try {
                 // jokes = json.getJSONArray(TAG_JOKE);
                 // getting json from url
-                //JSONObject c = json.getJSONObject(json);
+                //JSONObject c = json.getJ();
                 // store json item
-                //JSONObject c = new JSONObject(json);
+                Log.i("JSON", json.toString());
                 String price = json.getString("24h_avg");
+                Log.i("JSON", price);
                 // set json data in textview
                 mPriceText = (TextView) findViewById(R.id.priceTextView);
-                mPriceText.setText(price.replace("n", ""));
+                mPriceText.setText(price);
             } catch (Exception e) {
                 e.printStackTrace();
             }
