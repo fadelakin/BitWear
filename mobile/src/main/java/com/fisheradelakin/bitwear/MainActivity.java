@@ -34,30 +34,11 @@ public class MainActivity extends ActionBarActivity {
             //parse.execute();
 
             dialog();
-            update();
+            new GetPrice().execute();
         }
     }
 
-    protected void update() {
-        try {
-            URL url = new URL("https://api.bitcoinaverage.com/ticker/global/USD/24h_avg");
-            URLConnection yc = url.openConnection();
-            BufferedReader in = new BufferedReader(
-                    new InputStreamReader(
-                            yc.getInputStream()));
-            String inputLine;
-            StringBuilder builder = new StringBuilder();
-            while ((inputLine = in.readLine()) != null)
-                builder.append(inputLine.trim());
-            in.close();
-            String price = builder.toString();
-            pDialog.dismiss();
-            mPriceText = (TextView) findViewById(R.id.priceTextView);
-            mPriceText.setText(price);
-        } catch(IOException e) {
-            e.printStackTrace();
-        }
-    }
+
 
     protected void dialog() {
         pDialog = new ProgressDialog(MainActivity.this);
@@ -77,6 +58,29 @@ public class MainActivity extends ActionBarActivity {
         }
 
         return isAvailable;
+    }
+
+    private class GetPrice extends AsyncTask<String, String, String> {
+        protected void doInBackground() {
+            try {
+                URL url = new URL("https://api.bitcoinaverage.com/ticker/global/USD/24h_avg");
+                URLConnection yc = url.openConnection();
+                BufferedReader in = new BufferedReader(
+                        new InputStreamReader(
+                                yc.getInputStream()));
+                String inputLine;
+                StringBuilder builder = new StringBuilder();
+                while ((inputLine = in.readLine()) != null)
+                    builder.append(inputLine.trim());
+                in.close();
+                String price = builder.toString();
+                pDialog.dismiss();
+                mPriceText = (TextView) findViewById(R.id.priceTextView);
+                mPriceText.setText(price);
+            } catch(IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     /* private class JSONParse extends AsyncTask<String, String, JSONObject> {
