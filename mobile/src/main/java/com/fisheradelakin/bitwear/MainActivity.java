@@ -17,6 +17,7 @@ public class MainActivity extends ActionBarActivity {
 
     public static final String URL = "https://api.bitcoinaverage.com/ticker/global/USD/";
     TextView mPriceText;
+    TextView mUpdated;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,16 +64,17 @@ public class MainActivity extends ActionBarActivity {
         protected void onPostExecute(JSONObject json) {
             pDialog.dismiss();
             try {
-                // jokes = json.getJSONArray(TAG_JOKE);
-                // getting json from url
-                //JSONObject c = json.getJ();
                 // store json item
                 Log.i("JSON", json.toString());
                 String price = json.getString("24h_avg");
+                String date = json.getString("timestamp");
                 Log.i("JSON", price);
-                // set json data in textview
+                // set json data in text view
                 mPriceText = (TextView) findViewById(R.id.priceTextView);
-                mPriceText.setText(price);
+                mPriceText.setText("$" + price);
+
+                mUpdated = (TextView) findViewById(R.id.lastUpdatedTextView);
+                mUpdated.setText("Last Updated: " + date.replace("-", "").replace("0", ""));
             } catch (Exception e) {
                 e.printStackTrace();
             }
