@@ -8,5 +8,6 @@
     <string name="default_price">$333</string>
     <string name="amount">^ 1 BTC</string>
     <string name="last_updated">Last Updated: </string>
+    <string name="refresh">Refresh</string>
 
 </resources>

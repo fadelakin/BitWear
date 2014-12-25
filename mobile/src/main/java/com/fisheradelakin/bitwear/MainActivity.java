@@ -12,6 +12,8 @@ import android.support.v4.widget.SwipeRefreshLayout.OnRefreshListener;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
 import org.json.JSONObject;
@@ -27,12 +29,14 @@ public class MainActivity extends ActionBarActivity {
     TextView mPriceText;
     TextView mUpdated;
     SwipeRefreshLayout swipeLayout;
+    Button mRefreshButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        // pull to refresh
         swipeLayout = (SwipeRefreshLayout) findViewById(R.id.swipeContainer);
         swipeLayout.setColorSchemeColors(Color.BLUE, Color.GREEN, Color.YELLOW, Color.RED);
         swipeLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
@@ -54,6 +58,16 @@ public class MainActivity extends ActionBarActivity {
             JSONParse parse = new JSONParse();
             parse.execute();
         }
+
+        // refresh button since pull to refresh is kinda wonky
+        // it's kinda doing too much but whatevs. it's just a small project
+        mRefreshButton = (Button) findViewById(R.id.refreshButton);
+        mRefreshButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                new JSONParse().execute();
+            }
+        });
     }
 
     private boolean isNetworkAvailable() {
@@ -106,13 +120,4 @@ public class MainActivity extends ActionBarActivity {
             }
         }
     }
-
-   /* @Override
-    public void onRefresh() {
-        new Handler().postDelayed(new Runnable() {
-            @Override public void run() {
-                swipeLayout.setRefreshing(false);
-            }
-        }, 5000);
-    } */
 }

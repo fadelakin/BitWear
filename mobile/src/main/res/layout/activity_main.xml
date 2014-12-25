@@ -30,7 +30,8 @@
             android:text="@string/amount"
             android:layout_below="@+id/priceTextView"
             android:layout_centerHorizontal="true"
-            android:textColor="@android:color/black"/>
+            android:textColor="@android:color/black"
+            android:id="@+id/textView"/>
 
         <TextView
             android:layout_width="wrap_content"
@@ -41,6 +42,17 @@
             android:layout_centerHorizontal="true"
             android:id="@+id/lastUpdatedTextView"/>
 
-        </RelativeLayout>
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/refresh"
+            android:id="@+id/refreshButton"
+            android:background="#ffffffff"
+            android:textColor="#ff000000"
+            android:layout_below="@+id/textView"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="40sp"/>
+
+    </RelativeLayout>
 
 </android.support.v4.widget.SwipeRefreshLayout>
