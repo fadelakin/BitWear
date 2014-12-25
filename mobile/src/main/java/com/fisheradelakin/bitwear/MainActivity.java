@@ -2,9 +2,13 @@ package com.fisheradelakin.bitwear;
 
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
+import android.os.Handler;
+import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v4.widget.SwipeRefreshLayout.OnRefreshListener;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -22,11 +26,32 @@ public class MainActivity extends ActionBarActivity {
     public static final String URL = "https://api.bitcoinaverage.com/ticker/global/USD/";
     TextView mPriceText;
     TextView mUpdated;
+    SwipeRefreshLayout swipeLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        swipeLayout = (SwipeRefreshLayout) findViewById(R.id.swipeContainer);
+        //swipeLayout.setBackgroundColor(Color.BLACK);
+        swipeLayout.setColorSchemeColors(Color.BLUE, Color.GREEN, Color.YELLOW, Color.RED);
+        swipeLayout.setColorSchemeResources(Color.BLUE, Color.GREEN, Color.YELLOW, Color.RED);
+        swipeLayout.setProgressBackgroundColor(Color.BLACK);
+        swipeLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                if(isNetworkAvailable()) {
+                    new JSONParse().execute();
+                }
+
+                new Handler().postDelayed(new Runnable() {
+                    @Override public void run() {
+                        swipeLayout.setRefreshing(false);
+                    }
+                }, 5000);
+            }
+        });
 
         if(isNetworkAvailable()) {
             JSONParse parse = new JSONParse();
@@ -84,4 +109,13 @@ public class MainActivity extends ActionBarActivity {
             }
         }
     }
+
+   /* @Override
+    public void onRefresh() {
+        new Handler().postDelayed(new Runnable() {
+            @Override public void run() {
+                swipeLayout.setRefreshing(false);
+            }
+        }, 5000);
+    } */
 }
