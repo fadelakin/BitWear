@@ -12,6 +12,10 @@ import android.widget.TextView;
 
 import org.json.JSONObject;
 
+// TODO: Implement refresh button so if the user wants to make sure.
+// TODO: Implement Android Wear version
+// TODO: - The idea is that I should just be able to send the data to the watch
+// TODO: Support other currencies using dropdown menu.
 
 public class MainActivity extends ActionBarActivity {
 
