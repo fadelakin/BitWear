@@ -34,10 +34,7 @@ public class MainActivity extends ActionBarActivity {
         setContentView(R.layout.activity_main);
 
         swipeLayout = (SwipeRefreshLayout) findViewById(R.id.swipeContainer);
-        //swipeLayout.setBackgroundColor(Color.BLACK);
         swipeLayout.setColorSchemeColors(Color.BLUE, Color.GREEN, Color.YELLOW, Color.RED);
-        swipeLayout.setColorSchemeResources(Color.BLUE, Color.GREEN, Color.YELLOW, Color.RED);
-        swipeLayout.setProgressBackgroundColor(Color.BLACK);
         swipeLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
