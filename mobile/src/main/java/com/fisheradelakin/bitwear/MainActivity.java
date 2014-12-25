@@ -8,13 +8,19 @@ import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Handler;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v4.widget.SwipeRefreshLayout.OnRefreshListener;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.wearable.MessageApi;
+import com.google.android.gms.wearable.Node;
+import com.google.android.gms.wearable.NodeApi;
+import com.google.android.gms.wearable.Wearable;
 
 import org.json.JSONObject;
 
@@ -30,6 +36,9 @@ public class MainActivity extends ActionBarActivity {
     TextView mUpdated;
     SwipeRefreshLayout swipeLayout;
     Button mRefreshButton;
+    GoogleApiClient mApiClient;
+
+    private static final String START_ACTIVITY = "/start_activity";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,8 +75,44 @@ public class MainActivity extends ActionBarActivity {
             @Override
             public void onClick(View v) {
                 new JSONParse().execute();
+
+                String text = mPriceText.getText().toString();
+                if(!TextUtils.isEmpty(text)) {
+                    sendMessage(WEAR_MESSAGE_PATH, text);
+                }
             }
         });
+    }
+
+    private void initGoogleApiClient() {
+        mApiClient = new GoogleApiClient.Builder(this).addApi(Wearable.API).build();
+        mApiClient.connect();
+    }
+
+    @Override
+    public void onConnected(Bundle bundle) {
+        sendMessage(START_ACTIVITY, "");
+    }
+
+    private void sendMessage(final String path, final String text) {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                NodeApi.GetConnectedNodesResult nodes = Wearable.NodeApi.getConnectedNodes(mApiClient).await();
+                for(Node node: nodes.getNodes()) {
+                    MessageApi.SendMessageResult result = Wearable.MessageApi.sendMessage(
+                            mApiClient, node.getId(), path, text.getBytes()
+                    ).await();
+                }
+
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        // do something idk what yet
+                    }
+                });
+            }
+        }).start();
     }
 
     private boolean isNetworkAvailable() {
@@ -119,5 +164,11 @@ public class MainActivity extends ActionBarActivity {
                 e.printStackTrace();
             }
         }
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        mApiClient.disconnect();
     }
 }
