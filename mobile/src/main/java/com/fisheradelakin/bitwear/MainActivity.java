@@ -10,7 +10,6 @@ import android.os.Handler;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -18,7 +17,6 @@ import android.widget.TextView;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.wearable.MessageApi;
 import com.google.android.gms.wearable.Node;
 import com.google.android.gms.wearable.NodeApi;
 import com.google.android.gms.wearable.Wearable;
@@ -26,8 +24,7 @@ import com.google.android.gms.wearable.MessageApi.SendMessageResult;
 
 import org.json.JSONObject;
 
-// TODO: Implement refresh button so if the user wants to make sure.
-// TODO: Implement Android Wear version
+// TODO: Implement Android Wear version [IN PROGRESS]
 // TODO: - The idea is that I should just be able to send the data to the watch
 // TODO: Support other currencies using dropdown menu.
 
@@ -39,8 +36,6 @@ public class MainActivity extends ActionBarActivity implements GoogleApiClient.C
     SwipeRefreshLayout swipeLayout;
     Button mRefreshButton;
     GoogleApiClient mApiClient;
-
-    private static final String START_ACTIVITY = "/start_activity";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -95,7 +90,7 @@ public class MainActivity extends ActionBarActivity implements GoogleApiClient.C
 
     @Override
     public void onConnected(Bundle connectionHint) {
-        String message = "Hello wearable\n Via the data layer.";
+        String message = mPriceText.getText().toString();
         // Requires a new thread to avoid blocking the UI
         new SendToDataLayerThread("/message_path", message).start();
     }
