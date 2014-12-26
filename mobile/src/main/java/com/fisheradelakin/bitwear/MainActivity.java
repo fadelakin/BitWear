@@ -180,7 +180,7 @@ public class MainActivity extends ActionBarActivity implements GoogleApiClient.C
         public void run() {
             NodeApi.GetConnectedNodesResult nodes = Wearable.NodeApi.getConnectedNodes(mApiClient).await();
             for(Node node : nodes.getNodes()) {
-                MessageApi.SendMessageResult result = new Wearable.MessageApi.sendMessage(mApiClient, node.getId(), path, message.getBytes()).await();
+                SendMessageResult result = Wearable.MessageApi.sendMessage(mApiClient, node.getId(), path, message.getBytes()).await();
                 if(result.getStatus().isSuccess()) {
                     Log.v("myTag", "Message: {" + message + "} sent to: " + node.getDisplayName());
                 } else {
