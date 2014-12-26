@@ -75,44 +75,8 @@ public class MainActivity extends ActionBarActivity {
             @Override
             public void onClick(View v) {
                 new JSONParse().execute();
-
-                String text = mPriceText.getText().toString();
-                if(!TextUtils.isEmpty(text)) {
-                    sendMessage(WEAR_MESSAGE_PATH, text);
-                }
             }
         });
-    }
-
-    private void initGoogleApiClient() {
-        mApiClient = new GoogleApiClient.Builder(this).addApi(Wearable.API).build();
-        mApiClient.connect();
-    }
-
-    @Override
-    public void onConnected(Bundle bundle) {
-        sendMessage(START_ACTIVITY, "");
-    }
-
-    private void sendMessage(final String path, final String text) {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                NodeApi.GetConnectedNodesResult nodes = Wearable.NodeApi.getConnectedNodes(mApiClient).await();
-                for(Node node: nodes.getNodes()) {
-                    MessageApi.SendMessageResult result = Wearable.MessageApi.sendMessage(
-                            mApiClient, node.getId(), path, text.getBytes()
-                    ).await();
-                }
-
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        // do something idk what yet
-                    }
-                });
-            }
-        }).start();
     }
 
     private boolean isNetworkAvailable() {
@@ -164,11 +128,5 @@ public class MainActivity extends ActionBarActivity {
                 e.printStackTrace();
             }
         }
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        mApiClient.disconnect();
     }
 }
