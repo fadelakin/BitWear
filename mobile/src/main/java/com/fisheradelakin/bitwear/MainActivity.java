@@ -16,11 +16,13 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.wearable.MessageApi;
 import com.google.android.gms.wearable.Node;
 import com.google.android.gms.wearable.NodeApi;
 import com.google.android.gms.wearable.Wearable;
+import com.google.android.gms.wearable.MessageApi.SendMessageResult;
 
 import org.json.JSONObject;
 
@@ -29,7 +31,7 @@ import org.json.JSONObject;
 // TODO: - The idea is that I should just be able to send the data to the watch
 // TODO: Support other currencies using dropdown menu.
 
-public class MainActivity extends ActionBarActivity {
+public class MainActivity extends ActionBarActivity implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener{
 
     public static final String URL = "https://api.bitcoinaverage.com/ticker/global/USD/";
     TextView mPriceText;
@@ -44,6 +46,12 @@ public class MainActivity extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        mApiClient = new GoogleApiClient.Builder(this)
+                .addApi(Wearable.API)
+                .addConnectionCallbacks(this)
+                .addOnConnectionFailedListener(this)
+                .build();
 
         // pull to refresh
         swipeLayout = (SwipeRefreshLayout) findViewById(R.id.swipeContainer);
@@ -78,6 +86,35 @@ public class MainActivity extends ActionBarActivity {
             }
         });
     }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        mApiClient.connect();
+    }
+
+    @Override
+    public void onConnected(Bundle connectionHint) {
+        String message = "Hello wearable\n Via the data layer.";
+        // Requires a new thread to avoid blocking the UI
+        new SendToDataLayerThread("/message_path", message).start();
+    }
+
+    // Disconnect from the layer when the activity stops
+    @Override
+    protected void onStop() {
+        if(null != mApiClient && mApiClient.isConnected()) {
+            mApiClient.disconnect();
+        }
+        super.onStop();
+    }
+
+    // Placeholders for required connection callbacks
+    @Override
+    public void onConnectionSuspended(int cause) { }
+
+    @Override
+    public void onConnectionFailed(ConnectionResult connectionResult) { }
 
     private boolean isNetworkAvailable() {
         ConnectivityManager manager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -126,6 +163,30 @@ public class MainActivity extends ActionBarActivity {
                 mUpdated.setText("Last Updated: " + date.replace("-", "").replace("0", ""));
             } catch (Exception e) {
                 e.printStackTrace();
+            }
+        }
+    }
+
+    private class SendToDataLayerThread extends Thread {
+        String path;
+        String message;
+
+        // Constructor to send message to the data layer
+        SendToDataLayerThread(String p, String msg) {
+            path = p;
+            message = msg;
+        }
+
+        public void run() {
+            NodeApi.GetConnectedNodesResult nodes = Wearable.NodeApi.getConnectedNodes(mApiClient).await();
+            for(Node node : nodes.getNodes()) {
+                MessageApi.SendMessageResult result = new Wearable.MessageApi.sendMessage(mApiClient, node.getId(), path, message.getBytes()).await();
+                if(result.getStatus().isSuccess()) {
+                    Log.v("myTag", "Message: {" + message + "} sent to: " + node.getDisplayName());
+                } else {
+                    // Log an error
+                    Log.v("myTag", "ERROR: failed to send message");
+                }
             }
         }
     }
