@@ -90,7 +90,7 @@ public class MainActivity extends ActionBarActivity implements GoogleApiClient.C
 
     @Override
     public void onConnected(Bundle connectionHint) {
-        String message = mPriceText.getText().toString();
+        String message = "$330";
         // Requires a new thread to avoid blocking the UI
         new SendToDataLayerThread("/message_path", message).start();
     }
