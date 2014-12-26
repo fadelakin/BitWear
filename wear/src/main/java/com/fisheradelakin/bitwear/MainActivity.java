@@ -1,7 +1,12 @@
 package com.fisheradelakin.bitwear;
 
 import android.app.Activity;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.wearable.view.WatchViewStub;
 import android.util.Log;
 import android.widget.TextView;
@@ -24,21 +29,19 @@ public class MainActivity extends Activity {
                 mTextView = (TextView) stub.findViewById(R.id.text);
             }
         });
+
+        // Register the local broadcast receiver.
+        IntentFilter messageFilter = new IntentFilter(Intent.ACTION_SEND);
+        MessageReceiver messageReceiver = new MessageReceiver();
+        LocalBroadcastManager.getInstance(this).registerReceiver(messageReceiver, messageFilter);
     }
 
-    public class ListenerService extends WearableListenerService {
-
+    public class MessageReceiver extends BroadcastReceiver {
         @Override
-        public void onMessageReceived(MessageEvent messageEvent) {
-
-            if (messageEvent.getPath().equals("/message_path")) {
-                final String message = new String(messageEvent.getData());
-                Log.v("myTag", "Message path received on watch is: " + messageEvent.getPath());
-                Log.v("myTag", "Message received on watch is: " + message);
-            }
-            else {
-                super.onMessageReceived(messageEvent);
-            }
+        public void onReceive(Context context, Intent intent) {
+            String message = intent.getStringExtra("message");
+            // Display message in UI
+            mTextView.setText(message);
         }
     }
 }
