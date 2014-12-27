@@ -2,6 +2,7 @@ package com.fisheradelakin.bitwear;
 
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -36,6 +37,8 @@ public class MainActivity extends ActionBarActivity implements GoogleApiClient.C
     SwipeRefreshLayout swipeLayout;
     Button mRefreshButton;
     GoogleApiClient mApiClient;
+
+    String price;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -86,13 +89,6 @@ public class MainActivity extends ActionBarActivity implements GoogleApiClient.C
     protected void onStart() {
         super.onStart();
         mApiClient.connect();
-    }
-
-    @Override
-    public void onConnected(Bundle connectionHint) {
-        String message = "$330";
-        // Requires a new thread to avoid blocking the UI
-        new SendToDataLayerThread("/message_path", message).start();
     }
 
     // Disconnect from the layer when the activity stops
@@ -147,7 +143,7 @@ public class MainActivity extends ActionBarActivity implements GoogleApiClient.C
             try {
                 // store json item
                 Log.i("JSON", json.toString());
-                String price = json.getString("24h_avg");
+                price = json.getString("24h_avg");
                 String date = json.getString("timestamp");
                 Log.i("JSON", price);
                 // set json data in text view
@@ -156,6 +152,10 @@ public class MainActivity extends ActionBarActivity implements GoogleApiClient.C
 
                 mUpdated = (TextView) findViewById(R.id.lastUpdatedTextView);
                 mUpdated.setText("Last Updated: " + date.replace("-", "").replace("0", ""));
+
+                Intent intent = new Intent();
+                String message = mPriceText.getText().toString();
+                intent.putExtra("EXTRA_MESSAGE", message);
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -184,5 +184,12 @@ public class MainActivity extends ActionBarActivity implements GoogleApiClient.C
                 }
             }
         }
+    }
+
+    @Override
+    public void onConnected(Bundle connectionHint) {
+        String message = "crap";
+        // Requires a new thread to avoid blocking the UI
+        new SendToDataLayerThread("/message_path", message).start();
     }
 }
