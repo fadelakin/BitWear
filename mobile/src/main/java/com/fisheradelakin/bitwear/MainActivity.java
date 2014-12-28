@@ -152,10 +152,6 @@ public class MainActivity extends ActionBarActivity implements GoogleApiClient.C
 
                 mUpdated = (TextView) findViewById(R.id.lastUpdatedTextView);
                 mUpdated.setText("Last Updated: " + date.replace("-", "").replace("0", ""));
-
-                Intent intent = new Intent();
-                String message = mPriceText.getText().toString();
-                intent.putExtra("EXTRA_MESSAGE", message);
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -188,7 +184,7 @@ public class MainActivity extends ActionBarActivity implements GoogleApiClient.C
 
     @Override
     public void onConnected(Bundle connectionHint) {
-        String message = "crap";
+        String message = "crap"; // TODO: need to grab the text and push it to the watch
         // Requires a new thread to avoid blocking the UI
         new SendToDataLayerThread("/message_path", message).start();
     }
