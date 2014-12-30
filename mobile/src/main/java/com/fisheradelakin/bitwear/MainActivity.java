@@ -27,7 +27,6 @@ import org.json.JSONObject;
 
 // TODO: Implement Android Wear version [IN PROGRESS]
 // TODO: - The idea is that I should just be able to send the data to the watch
-// TODO: Support other currencies using dropdown menu.
 
 public class MainActivity extends ActionBarActivity implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener{
 
@@ -119,6 +118,11 @@ public class MainActivity extends ActionBarActivity implements GoogleApiClient.C
         return isAvailable;
     }
 
+    public String getPrice() {
+        String price = mPriceText.getText().toString();
+        return price;
+    }
+
     private class JSONParse extends AsyncTask<String, String, JSONObject> {
         private ProgressDialog pDialog;
         @Override
@@ -184,8 +188,8 @@ public class MainActivity extends ActionBarActivity implements GoogleApiClient.C
 
     @Override
     public void onConnected(Bundle connectionHint) {
-        String message = "crap"; // TODO: need to grab the text and push it to the watch
+        //String message = "crap"; // TODO: need to grab the text and push it to the watch
         // Requires a new thread to avoid blocking the UI
-        new SendToDataLayerThread("/message_path", message).start();
+        new SendToDataLayerThread("/message_path", getPrice()).start();
     }
 }
