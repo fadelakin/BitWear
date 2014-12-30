@@ -37,7 +37,6 @@ public class MainActivity extends ActionBarActivity implements GoogleApiClient.C
     GoogleApiClient mApiClient;
 
     String price;
-    String newPrice;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -99,13 +98,9 @@ public class MainActivity extends ActionBarActivity implements GoogleApiClient.C
         super.onStop();
     }
 
-    public String getPrice() {
+   public String getPrice() {
+        String newPrice = ((TextView)findViewById(R.id.priceTextView)).getText().toString();
         return newPrice;
-    }
-
-    public void setPrice(String value) {
-        //value = ((TextView)findViewById(R.id.priceTextView)).getText().toString();
-        newPrice = value;
     }
 
     // Placeholders for required connection callbacks
@@ -160,7 +155,7 @@ public class MainActivity extends ActionBarActivity implements GoogleApiClient.C
 
                 mUpdated = (TextView) findViewById(R.id.lastUpdatedTextView);
                 mUpdated.setText("Last Updated: " + date.replace("-", "").replace("0", ""));
-                setPrice(price);
+                getPrice();
             } catch (Exception e) {
                 e.printStackTrace();
             }
