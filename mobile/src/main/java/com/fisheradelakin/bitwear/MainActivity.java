@@ -32,11 +32,11 @@ public class MainActivity extends ActionBarActivity implements GoogleApiClient.C
     public static final String URL = "https://api.bitcoinaverage.com/ticker/global/USD/";
     TextView mPriceText;
     TextView mUpdated;
-    SwipeRefreshLayout swipeLayout;
+    SwipeRefreshLayout mSwipeRefreshLayout;
     Button mRefreshButton;
     GoogleApiClient mApiClient;
 
-    String price;
+    String mPrice;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,18 +50,19 @@ public class MainActivity extends ActionBarActivity implements GoogleApiClient.C
                 .build();
 
         // pull to refresh
-        swipeLayout = (SwipeRefreshLayout) findViewById(R.id.swipeContainer);
-        swipeLayout.setColorSchemeColors(Color.BLUE, Color.GREEN, Color.YELLOW, Color.RED);
-        swipeLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+        mSwipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipeContainer);
+        mSwipeRefreshLayout.setColorSchemeColors(Color.BLUE, Color.GREEN, Color.YELLOW, Color.RED);
+        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                if(isNetworkAvailable()) {
+                if (isNetworkAvailable()) {
                     new JSONParse().execute();
                 }
 
                 new Handler().postDelayed(new Runnable() {
-                    @Override public void run() {
-                        swipeLayout.setRefreshing(false);
+                    @Override
+                    public void run() {
+                        mSwipeRefreshLayout.setRefreshing(false);
                     }
                 }, 5000);
             }
@@ -146,12 +147,12 @@ public class MainActivity extends ActionBarActivity implements GoogleApiClient.C
             try {
                 // store json item
                 Log.i("JSON", json.toString());
-                price = json.getString("24h_avg");
+                mPrice = json.getString("24h_avg");
                 String date = json.getString("timestamp");
-                Log.i("JSON", price);
+                Log.i("JSON", mPrice);
                 // set json data in text view
                 mPriceText = (TextView) findViewById(R.id.priceTextView);
-                mPriceText.setText("$" + price);
+                mPriceText.setText("$" + mPrice);
 
                 mUpdated = (TextView) findViewById(R.id.lastUpdatedTextView);
                 mUpdated.setText("Last Updated: " + date.replace("-", "").replace("0", ""));
@@ -188,8 +189,8 @@ public class MainActivity extends ActionBarActivity implements GoogleApiClient.C
 
     @Override
     public void onConnected(Bundle connectionHint) {
-        //String message = ((TextView)findViewById(R.id.priceTextView)).getText().toString();
+        String message = ((TextView)findViewById(R.id.priceTextView)).getText().toString();
         // Requires a new thread to avoid blocking the UI
-        new SendToDataLayerThread("/message_path", getPrice()).start();
+        new SendToDataLayerThread("/message_path", message).start();
     }
 }
